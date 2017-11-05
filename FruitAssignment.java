@@ -20,19 +20,22 @@ class Fruit {
 
 class MainFrame extends JFrame {
    JFrame f;
+   JPanel iPanel;
    JPanel mainPanel;
    JPanel sPanel;
+   JLabel introBackground;
    JLabel background;
    JLabel correctBackground;
    JLabel correctFruitImage;
    JLabel shuffledWordLabel; 
    JLabel correctFruitLabel;
    JLabel timeLabel;
-   JLabel vitaminsLabel;
-   JLabel mineralsLabel;
-   JLabel caloriesLabel;
+   JLabel vitaminALabel;
+   JLabel vitaminBLabel;
+   JLabel vitaminCLabel;
    JLabel incorrectLabel;
    JTextField textField;
+   JButton playButton;
    JButton checkButton;
    JButton clearButton;
    JButton continueButton;
@@ -54,7 +57,7 @@ class MainFrame extends JFrame {
    }
    
    Font large() {
-      Font f = new Font("Bradley Hand", Font.PLAIN, 70);
+      Font f = new Font("Bradley Hand", Font.PLAIN, 67);
       return f;
    }
    
@@ -75,20 +78,42 @@ class MainFrame extends JFrame {
       f.setSize(W,H);
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       
-      mainPanel = new JPanel();
-      mainPanel.setLayout(null);
-      
       readFile();
       getImagePaths();
-      shuffleFruit();
-      startTimer();
-      displayMainInterface();
       
-      f.add(mainPanel);
+      displayIntro();
       f.setVisible(true);
    }
    
+   private void displayIntro() {
+      iPanel = new JPanel();
+      iPanel.setLayout(null);
+      
+      introBackground = new JLabel();
+      introBackground.setBounds(0,0,800,900);
+      introBackground.setIcon(new ImageIcon("intro.png"));
+      
+      playButton = new JButton("PLAY");
+      playButton.setBounds(216, 582, 369, 111);
+      playButton.setFont(medium());
+      playButton.setBorder(null);
+      playButton.setOpaque(false);
+      
+      bListener = new ButtonListener();
+      playButton.addActionListener(bListener);
+      
+      iPanel.add(playButton);
+      iPanel.add(introBackground);
+      
+      f.add(iPanel);
+   }
+   
    private void displayMainInterface() {
+      iPanel.setVisible(false);
+      mainPanel = new JPanel();
+      mainPanel.setLayout(null);
+      shuffleFruit();
+      startTimer();
       
       background = new JLabel();
       background.setIcon(new ImageIcon("background.png"));
@@ -132,6 +157,8 @@ class MainFrame extends JFrame {
       mainPanel.add(textField);
       mainPanel.add(shuffledWordLabel);
       mainPanel.add(background);
+      
+      f.add(mainPanel);
    }
       
    private void readFile() throws FileNotFoundException {
@@ -199,24 +226,24 @@ class MainFrame extends JFrame {
        correctFruitImage.setIcon(new ImageIcon(fruitImages.get(randomFruit)));
        
        correctFruitLabel = new JLabel(randomFruit, SwingConstants.CENTER);
-       correctFruitLabel.setBounds(172, 437, 456, 88);
+       correctFruitLabel.setBounds(141, 440, 518, 88);
        correctFruitLabel.setFont(large());
        
        timeLabel = new JLabel("TIME: " +totalTime()/1000.0 + " s", SwingConstants.CENTER);
        timeLabel.setBounds(211, 522, 377, 50);
        timeLabel.setFont(small());
        
-       vitaminsLabel = new JLabel("VITAMINS: " + fruits.get(randomIndex).vitamins, SwingConstants.CENTER);
-       vitaminsLabel.setBounds(188, 562, 424, 50);
-       vitaminsLabel.setFont(small());
+       vitaminALabel = new JLabel("VITAMIN A: " + fruits.get(randomIndex).vitamins, SwingConstants.CENTER);
+       vitaminALabel.setBounds(188, 562, 424, 50);
+       vitaminALabel.setFont(small());
        
-       mineralsLabel = new JLabel("MINERALS: " + fruits.get(randomIndex).minerals, SwingConstants.CENTER);
-       mineralsLabel.setBounds(188, 604, 424, 50);
-       mineralsLabel.setFont(small());
+       vitaminBLabel = new JLabel("VITAMIN B: " + fruits.get(randomIndex).minerals, SwingConstants.CENTER);
+       vitaminBLabel.setBounds(188, 604, 424, 50);
+       vitaminBLabel.setFont(small());
        
-       caloriesLabel = new JLabel("CALORIES: " + fruits.get(randomIndex).calories, SwingConstants.CENTER);
-       caloriesLabel.setBounds(188, 647, 424, 50);
-       caloriesLabel.setFont(small());
+       vitaminCLabel = new JLabel("VITAMIN C: " + fruits.get(randomIndex).calories, SwingConstants.CENTER);
+       vitaminCLabel.setBounds(188, 647, 424, 50);
+       vitaminCLabel.setFont(small());
        
        continueButton = new JButton("CONTINUE");
        continueButton.setBounds(188, 728, 424, 80);
@@ -229,9 +256,9 @@ class MainFrame extends JFrame {
        
        sPanel.add(timeLabel);
        sPanel.add(continueButton);
-       sPanel.add(caloriesLabel);
-       sPanel.add(mineralsLabel);
-       sPanel.add(vitaminsLabel);
+       sPanel.add(vitaminCLabel);
+       sPanel.add(vitaminBLabel);
+       sPanel.add(vitaminALabel);
        sPanel.add(correctFruitLabel);
        sPanel.add(correctFruitImage);
        sPanel.add(background);
@@ -271,7 +298,10 @@ class MainFrame extends JFrame {
             check();
          } else if (action.getSource() == clearButton) {
             clear();
-         } 
+         }  else if (action.getSource() == playButton) {
+            displayMainInterface();
+            System.out.println("LLL");
+         }
       }
    }
    
