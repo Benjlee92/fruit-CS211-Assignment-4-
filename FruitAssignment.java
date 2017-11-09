@@ -1,3 +1,14 @@
+/*Benjamin Lee
+ID: 950578554
+11/7/2017
+Assignment 4 Fruit
+Description: This program reads a txt file containing names of fruits and their vitamins. The program displays a GUI and displays a 
+shuffled fruit name. the user then enters the correct name of the fruit. Whrn the user is correct, the image of the fruit is displayed
+along with the vitamins .
+
+NOTE: I use custom fruit images, and I added 2 new fruits to the original txt file (strawberry and kiwi)
+*/
+
 import java.util.List;
 import java.awt.*; 
 import java.awt.event.*; 
@@ -6,6 +17,7 @@ import java.util.*;
 import java.io.*;   
 import javax.swing.border.*;
 
+//my Fruit class.
 class Fruit {
    String name;
    String vitamins;
@@ -17,8 +29,9 @@ class Fruit {
         return (this.name+ " " + this.vitamins + " " + this.minerals + " " + this.calories);
    }
 }
-
+// the mainframe class that extends the JFrame and allows for the views to be created.
 class MainFrame extends JFrame {
+   // my variables I use
    JFrame f;
    JPanel iPanel;
    JPanel mainPanel;
@@ -71,20 +84,21 @@ class MainFrame extends JFrame {
       return f;
    }
    
+   // this gets implemented in the main method.
    public MainFrame() throws FileNotFoundException {
       f = new JFrame("Welcome to Fruit");
       int W = 800;
       int H = 900;
       f.setSize(W,H);
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-      
+      // I rea the file and get the image paths
       readFile();
       getImagePaths();
-      
+      //I display the intro screen 
       displayIntro();
       f.setVisible(true);
    }
-   
+   // this method displays the introduction screen when the program runs for the first time.
    private void displayIntro() {
       iPanel = new JPanel();
       iPanel.setLayout(null);
@@ -100,6 +114,7 @@ class MainFrame extends JFrame {
       playButton.setOpaque(false);
       
       bListener = new ButtonListener();
+      //this button action handles when the user htis the play button.
       playButton.addActionListener(bListener);
       
       iPanel.add(playButton);
@@ -108,6 +123,7 @@ class MainFrame extends JFrame {
       f.add(iPanel);
    }
    
+   // this method gets called when the user presses the play button. It displays the main interface for the game.
    private void displayMainInterface() {
       iPanel.setVisible(false);
       mainPanel = new JPanel();
@@ -160,7 +176,7 @@ class MainFrame extends JFrame {
       
       f.add(mainPanel);
    }
-      
+   // this is the method to handle reading the txt file.
    private void readFile() throws FileNotFoundException {
       Scanner input = new Scanner(new File("fruit.txt"));
       while (input.hasNext()) {
@@ -172,7 +188,7 @@ class MainFrame extends JFrame {
          fruits.add(f);
       }
    }
-   
+   // this is the method to handle getting the image paths.
    private void getImagePaths() {
       String fname;
       String fpath;
@@ -182,7 +198,7 @@ class MainFrame extends JFrame {
          fruitImages.put(fname, fpath);
       }
    }
-   
+   // my timer methods. these get called when the user starts the game and when the user checks their answer.
    private void startTimer() {
       startTime = System.currentTimeMillis();
    }
@@ -190,24 +206,23 @@ class MainFrame extends JFrame {
    private void endTimer() {
       endTime = System.currentTimeMillis();
    }
-
+   
+   // this is the method to randomize the order of the fruit, and the name of the fruit.
    private void shuffleFruit() {
       Random rand = new Random();
       randomIndex = rand.nextInt(fruits.size());
-      randomFruit = fruits.get(randomIndex).name.toUpperCase();
-      System.out.println(randomFruit);
-      
+      randomFruit = fruits.get(randomIndex).name.toUpperCase();      
       shuffledLetters = Arrays.asList(randomFruit.split(""));
       Collections.shuffle(shuffledLetters);
-      System.out.println(shuffledLetters);
       
       for (int i =0; i < shuffledLetters.size(); i++) {
          shuffledName = String.join("",shuffledLetters);
       }
-      
-      System.out.println(shuffledName);
    }
    
+   // this method handles when the user is correct. Im not sure if creating a new panel each time the user is correct is the right way to do this.
+   // I think this might take up more memory than needs. But im not sure exactly how to optimize. I think that a new panel is being added over and over and over, 
+   // but Im not sure.
    private void correct() {
        endTimer();
        mainPanel.setVisible(false);
@@ -265,15 +280,16 @@ class MainFrame extends JFrame {
        f.add(sPanel);
    }
    
+   // this method handles when the user is wrong.
    private void incorrect() {
       incorrectLabel.setVisible(true);
    }
-   
+   // this method handles when the user hits the clear button.
    private void clear() {
       textField.setText("");
       incorrectLabel.setVisible(false);
    }
-   
+   // this method handles when the user checks their answer.
    private void check() {
       String text = textField.getText();
       if (text.toUpperCase().equals(randomFruit)) {
@@ -282,7 +298,7 @@ class MainFrame extends JFrame {
          incorrect();
       }
    }
-   
+   // this method handles when the user presses the continue button after the correct answer has been checked.
    private void continueButtonAction() {
       startTimer();
       mainPanel.setVisible(true);
@@ -292,6 +308,7 @@ class MainFrame extends JFrame {
       textField.setText("");
    }
    
+   // my button listener, these are connected to the checkButton, clearButton, and the playButton.
    class ButtonListener implements ActionListener{  
       public void actionPerformed(ActionEvent action) {
          if (action.getSource() == checkButton) {
@@ -300,18 +317,17 @@ class MainFrame extends JFrame {
             clear();
          }  else if (action.getSource() == playButton) {
             displayMainInterface();
-            System.out.println("LLL");
          }
       }
    }
-   
+   // this is the action listener connected to the continue button.
    class ContinueListener implements ActionListener {
       public void actionPerformed(ActionEvent action) {
          continueButtonAction();
       }
    }  
 }
-
+// main 
 public class FruitAssignment {
    public static void main(String[] args) throws FileNotFoundException {
       new MainFrame();
